@@ -1,6 +1,12 @@
 let express = require("express");
 
 let app = express();
+
+//Tell express to extract data from input field
+app.use(express.urlencoded({extended: false}));
+
+//When someone visits the frontpage ('/'), we show them the following. T
+//They are making a get request
 app.get("/", function(req, res) {
   res.send(`<!DOCTYPE html>
 <html>
@@ -53,7 +59,7 @@ app.get("/", function(req, res) {
 </html>`);
 });
 app.post('/create-item', function(req, res){
-    console.log('make this dynamic');
+    console.log(req.body.item);
     res.send('Thanks for submitting the form')
 })
 app.listen(3000);
