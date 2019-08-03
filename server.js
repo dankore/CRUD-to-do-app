@@ -6,6 +6,9 @@ let app = express();
 //Create db
 let db;
 
+//Make contents of the Public directory available to root
+app.use(express.static("public"));
+
 let connectionString =
   "mongodb+srv://todoAppUser:zimma123@cluster0-gsirt.mongodb.net/TodoApp?retryWrites=true&w=majority";
 mongodb.connect(connectionString, { useNewUrlParser: true }, function(
@@ -16,7 +19,10 @@ mongodb.connect(connectionString, { useNewUrlParser: true }, function(
   app.listen(3000);
 });
 
-//Tell express to extract data from input field
+// Tell express extract data and send to asynchronous request
+app.use(express.json());
+
+//Tell express to extract data from input field to body of request object
 app.use(express.urlencoded({ extended: false }));
 
 //When someone visits the frontpage ('/'), we show them the following. T
@@ -61,8 +67,9 @@ app.get("/", function(req, res) {
         })
         .join("")}      
     </ul>
-    
   </div>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="/browser.js"></script>
   
 </body>
 </html>`);
@@ -74,3 +81,8 @@ app.post("/create-item", function(req, res) {
     res.redirect("/");
   });
 });
+
+app.post('/update-item', (req, res)=>{
+    console.log(req.body.text);
+    res.send("Success")
+})
