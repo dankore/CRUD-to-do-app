@@ -1,14 +1,33 @@
 let express = require("express");
+let mongodb = require("mongodb");
 
 let app = express();
 
+//Create db
+let db;
+
+let connectionString =
+  "mongodb+srv://todoAppUser:zimma123@cluster0-gsirt.mongodb.net/TodoApp?retryWrites=true&w=majority";
+mongodb.connect(connectionString, { useNewUrlParser: true }, function(
+  err,
+  client
+) {
+  db = client.db();
+  app.listen(3000);
+});
+
 //Tell express to extract data from input field
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 
 //When someone visits the frontpage ('/'), we show them the following. T
 //They are making a get request
 app.get("/", function(req, res) {
-  res.send(`<!DOCTYPE html>
+  //Load data before send it to client's side
+  db.collection("items")
+    .find()
+    .toArray(function(err, items) {
+      res.send(`
+      <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -30,36 +49,28 @@ app.get("/", function(req, res) {
     </div>
     
     <ul class="list-group pb-5">
-      <li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
-        <span class="item-text">Fake example item #1</span>
+      ${items
+        .map(item => {
+          return `<li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
+        <span class="item-text">${item.text}</span>
         <div>
           <button class="edit-me btn btn-secondary btn-sm mr-1">Edit</button>
           <button class="delete-me btn btn-danger btn-sm">Delete</button>
         </div>
-      </li>
-      <li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
-        <span class="item-text">Fake example item #2</span>
-        <div>
-          <button class="edit-me btn btn-secondary btn-sm mr-1">Edit</button>
-          <button class="delete-me btn btn-danger btn-sm">Delete</button>
-        </div>
-      </li>
-      <li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
-        <span class="item-text">Fake example item #3</span>
-        <div>
-          <button class="edit-me btn btn-secondary btn-sm mr-1">Edit</button>
-          <button class="delete-me btn btn-danger btn-sm">Delete</button>
-        </div>
-      </li>
+      </li>`;
+        })
+        .join("")}      
     </ul>
     
   </div>
   
 </body>
 </html>`);
+    });
+  //Send data to client
 });
-app.post('/create-item', function(req, res){
-    console.log(req.body.item);
-    res.send('Thanks for submitting the form')
-})
-app.listen(3000);
+app.post("/create-item", function(req, res) {
+  db.collection("items").insertOne({ text: req.body.item }, function() {
+    res.redirect("/");
+  });
+});
