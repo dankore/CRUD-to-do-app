@@ -1,3 +1,23 @@
+//Create feature
+let createField = document.getElementById("create-field");
+document.getElementById("create-form").addEventListener("submit", e => {
+  e.preventDefault();
+
+  axios
+    .post("/create-item", {
+      text: createField.value
+    })
+    .then(() => {
+      //Create the HTMl for the new item
+      document
+        .getElementById("item-list")
+        .insertAdjacentHTML("beforeend", "hello");
+    })
+    .catch(() => {
+      console.log("Please try again later");
+    });
+});
+
 document.addEventListener("click", e => {
   // Delete feature
   if (e.target.classList.contains("delete-me")) {
