@@ -22,7 +22,7 @@ document.getElementById("item-list").insertAdjacentHTML("beforeend", ourHTML);
 let createField = document.getElementById("create-field");
 document.getElementById("create-form").addEventListener("submit", e => {
   e.preventDefault();
-
+  if (!createField.value) return;
   axios
     .post("/create-item", {
       text: createField.value
