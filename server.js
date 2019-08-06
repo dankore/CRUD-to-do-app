@@ -28,8 +28,8 @@ app.use(express.urlencoded({ extended: false }));
 
 function passwordProtected(req, res, next) {
   res.set("WWW-Authenticate", 'Basic realm="Simple Todo App"');
-  console.log(req.headers.authorization);
-  if (req.headers.authorization == "Basic YWJ1amE6bWVtZQ==") {
+  //Abuja, Nigeria
+  if (req.headers.authorization == "Basic YWJ1amE6bmlnZXJpYQ==") {
     next();
   } else {
     res.status(401).send("Authentication required");
