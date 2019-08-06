@@ -7,6 +7,11 @@ let app = express();
 //Create db
 let db;
 
+let port = process.env.PORT;
+if(port == null || port == ""){
+port = 3000
+}
+
 //Make contents of the Public directory available to root
 app.use(express.static("public"));
 
@@ -17,7 +22,7 @@ mongodb.connect(connectionString, { useNewUrlParser: true }, function(
   client
 ) {
   db = client.db();
-  app.listen(3000);
+  app.listen(port);
 });
 
 // Tell express extract data and send to asynchronous request
