@@ -1,6 +1,7 @@
 let express = require("express");
 let mongodb = require("mongodb");
 let sanitizeHTML = require("sanitize-html");
+require("dotenv").config();
 
 let app = express();
 
@@ -15,8 +16,7 @@ port = 3000
 //Make contents of the Public directory available to root
 app.use(express.static("public"));
 
-let connectionString =
-  "mongodb+srv://todoAppUser:zimma123@cluster0-gsirt.mongodb.net/TodoApp?retryWrites=true&w=majority";
+let connectionString = process.env.CONNECTIONSTRING;
 mongodb.connect(connectionString, { useNewUrlParser: true }, function(
   err,
   client
